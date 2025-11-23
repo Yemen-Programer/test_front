@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Music, Shirt, Utensils, ArrowLeft, Mic, Hammer, Users, Baby } from 'lucide-react';
 import './page.css';
-import Header from '@/app/components/header';
+import Header from '../../components/header';
 import ContentService from '../../../services/content';
 
 
