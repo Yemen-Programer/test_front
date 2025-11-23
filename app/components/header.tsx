@@ -2,7 +2,9 @@
 import { useState } from 'react';
 
 const Header = () => {
-  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
+
   const [searchQuery, setSearchQuery] = useState('');
   const menuStructure = [
     {
