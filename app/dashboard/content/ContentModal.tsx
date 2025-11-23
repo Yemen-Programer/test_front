@@ -4,11 +4,13 @@ const BASE_URL = "http://localhost:5000"; // ← عدل حسب السيرفر
 interface ContentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void; // يمكنك تحديد نوع data إذا تعرفينه
+  onSave: (data: any) => void;
   content?: {
     title?: string;
     description?: string;
     type?: string;
+    region?: string; 
+    image?: string;   
   };
 }
 
