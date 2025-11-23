@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 
 const BASE_URL = "http://localhost:5000"; // ← عدل حسب السيرفر
+interface ContentModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (data: any) => void; // يمكنك تحديد نوع data إذا تعرفينه
+  content?: {
+    title?: string;
+    description?: string;
+    type?: string;
+  };
+}
 
 const ContentModal = ({ isOpen, onClose, onSave, content }) => {
   const [title, setTitle] = useState("");
