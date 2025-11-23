@@ -43,10 +43,10 @@ const ContentModal = ({ isOpen, onClose, onSave, content }: ContentModalProps) =
 
   useEffect(() => {
     if (content) {
-      setTitle(content.title);
-      setDescription(content.description);
-      setType(content.type);
-      setRegion(content.region);
+      setTitle(content.title ?? "");
+      setDescription(content.description ?? "");
+      setType(content.type ?? "");
+      setRegion(content.region ?? "");
       setOldImage(content.image || null);
       setImage(null);
     } else {
