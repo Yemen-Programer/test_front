@@ -1,0 +1,240 @@
+.cards-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  min-height: 70vh;
+  position: relative;
+}
+
+.card {
+  width: 280px;  /* زيادة العرض */
+  height: 180px;  /* تقليل الطول */
+  background: #D7B9E4;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  place-content: center;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.card h2 {
+  z-index: 1;
+  color: #2A0F38;
+  font-size: 1.5em;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.card-subtitle {
+  z-index: 1;
+  color: #2A0F38;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  width: 160px;  /* زيادة العرض لتتناسب مع الكرت الأوسع */
+  background-image: linear-gradient(180deg, #2A0F38, #774230);
+  height: 180%;  /* زيادة الطول ليتناسب مع الكرت الأقصر */
+  animation: rotBGimg 3s linear infinite;
+  transition: all 0.2s linear;
+}
+
+@keyframes rotBGimg {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  background: #D7B9E4;
+  inset: 5px;
+  border-radius: 15px;
+}
+
+/* تنسيق المواقع بشكل النجمة */
+.star-layout {
+  display: grid;
+  grid-template-areas: 
+    "top-left . top-right"
+    ". center ."
+    "bottom-left . bottom-right";
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: 1fr auto 1fr;
+  gap: 60px;
+  justify-items: center;
+  align-items: center;
+  min-height: 80vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+}
+
+/* تحديد مواقع الكروت في النجمة */
+.card.top-left {
+  grid-area: top-left;
+  justify-self: end;
+  align-self: end;
+}
+
+.card.top-right {
+  grid-area: top-right;
+  justify-self: start;
+  align-self: end;
+}
+
+.card.center {
+  grid-area: center;
+  transform: scale(1.1);
+}
+
+.card.center:hover {
+  transform: scale(1.1) translateY(-10px);
+}
+
+.card.bottom-left {
+  grid-area: bottom-left;
+  justify-self: end;
+  align-self: start;
+}
+
+.card.bottom-right {
+  grid-area: bottom-right;
+  justify-self: start;
+  align-self: start;
+}
+
+/* تأثيرات خاصة لكل كرت - بنفس الألوان الجديدة */
+.card:nth-child(1)::before {
+  background-image: linear-gradient(180deg, #2A0F38, #774230);
+}
+
+.card:nth-child(2)::before {
+  background-image: linear-gradient(180deg, #2A0F38, #774230);
+}
+
+.card:nth-child(3)::before {
+  background-image: linear-gradient(180deg, #2A0F38, #774230);
+  width: 180px;  /* زيادة العرض للكرت المركزي */
+  height: 200%;  /* زيادة الطول للكرت المركزي */
+}
+
+.card:nth-child(4)::before {
+  background-image: linear-gradient(180deg, #2A0F38, #774230);
+}
+
+.card:nth-child(5)::before {
+  background-image: linear-gradient(180deg, #2A0F38, #774230);
+}
+
+/* تنسيق للشاشات المتوسطة */
+@media (max-width: 1024px) {
+  .star-layout {
+    gap: 40px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas: 
+      "top-left top-right"
+      "center center"
+      "bottom-left bottom-right";
+  }
+  
+  .card.top-left,
+  .card.top-right,
+  .card.bottom-left,
+  .card.bottom-right {
+    justify-self: center;
+    align-self: center;
+  }
+  
+  .card.center {
+    transform: scale(1.1);
+  }
+  
+  .card.center:hover {
+    transform: scale(1.1) translateY(-10px);
+  }
+}
+
+/* تنسيق للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .star-layout {
+    gap: 30px;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, auto);
+    grid-template-areas: 
+      "top-left"
+      "top-right"
+      "center"
+      "bottom-left"
+      "bottom-right";
+    padding: 20px 10px;
+  }
+  
+  .card {
+    width: 260px;  /* تعديل العرض للشاشات الصغيرة */
+    height: 170px;  /* تعديل الطول للشاشات الصغيرة */
+  }
+  
+  .card::before {
+    width: 150px;  /* تعديل العرض للشاشات الصغيرة */
+    height: 170%;  /* تعديل الطول للشاشات الصغيرة */
+  }
+  
+  .card.center {
+    transform: scale(1);
+  }
+  
+  .card.center:hover {
+    transform: translateY(-10px);
+  }
+  
+  .card:nth-child(3)::before {
+    width: 170px;  /* تعديل العرض للكرت المركزي في الشاشات الصغيرة */
+    height: 190%;  /* تعديل الطول للكرت المركزي في الشاشات الصغيرة */
+  }
+}
+
+/* تنسيق للشاشات الصغيرة جداً */
+@media (max-width: 480px) {
+  .card {
+    width: 240px;  /* تصغير أكثر للشاشات الصغيرة جداً */
+    height: 160px;
+  }
+  
+  .card::before {
+    width: 140px;  /* تصغير أكثر للشاشات الصغيرة جداً */
+    height: 160%;  /* تصغير أكثر للشاشات الصغيرة جداً */
+  }
+  
+  .card h2 {
+    font-size: 1.3em;
+  }
+  
+  .card-subtitle {
+    font-size: 0.8em;
+  }
+  
+  .card:nth-child(3)::before {
+    width: 160px;  /* تصغير الكرت المركزي للشاشات الصغيرة جداً */
+    height: 180%;  /* تصغير الكرت المركزي للشاشات الصغيرة جداً */
+  }
+}
