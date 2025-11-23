@@ -13,7 +13,11 @@ import {
 } from 'lucide-react';
 import './page.css';
 
-const DashboardLayout = ({ children, activePage }) => {
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+  activePage: string;
+}
+const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
