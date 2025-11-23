@@ -40,7 +40,7 @@ const UserModal = ({ isOpen, onClose, onSave, user }) => {
       return;
     }
 
-    const userData = {
+const userData: any = {
       name,
       email,
       role
