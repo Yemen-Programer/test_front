@@ -4,7 +4,8 @@ import { FaUsers, FaEye, FaStar, FaArrowRight } from 'react-icons/fa';
 import Header from '../components/header';
 
 const OurIdentityPage = () => {
-  const [hoveredCard, setHoveredCard] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
 
   const cards = [
     {
