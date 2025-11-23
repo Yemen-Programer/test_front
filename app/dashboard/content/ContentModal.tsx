@@ -100,7 +100,6 @@ const ContentModal = ({ isOpen, onClose, onSave, content }) => {
             <textarea
               className="form-textarea"
               value={description}
-              rows="4"
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
