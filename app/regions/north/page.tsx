@@ -5,7 +5,7 @@ import { MapPin, Music, Shirt, Utensils, ArrowLeft, Mic, Hammer, Users, Baby } f
 import './page.css';
 import Header from '../../components/header';
 import ContentService from '../../../services/content';
-
+import '@google/model-viewer';
 
 // تعريف الأنواع TypeScript
 interface ContentItem {
