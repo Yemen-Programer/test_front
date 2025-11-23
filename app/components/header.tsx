@@ -36,11 +36,10 @@ const Header = () => {
     },
   ];
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // معالجة البحث هنا
-    console.log('بحث عن:', searchQuery);
-  };
+const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  console.log('بحث عن:', searchQuery);
+};
 
   return (
     <header className="w-full border-b border-gray-300 p-4 relative bg-[#FFF1E2] backdrop-blur-sm">
