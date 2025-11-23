@@ -12,7 +12,7 @@ interface ContentModalProps {
   };
 }
 
-const ContentModal = ({ isOpen, onClose, onSave, content }) => {
+const ContentModal = ({ isOpen, onClose, onSave, content }: ContentModalProps) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
