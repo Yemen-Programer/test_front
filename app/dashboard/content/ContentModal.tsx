@@ -20,7 +20,7 @@ const ContentModal = ({ isOpen, onClose, onSave, content }: ContentModalProps) =
   const [type, setType] = useState("");
   const [region, setRegion] = useState("");
   const [image, setImage] = useState(null);
-  const [oldImage, setOldImage] = useState(null);
+  const [oldImage, setOldImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const contentTypes = [
