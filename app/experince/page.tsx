@@ -48,10 +48,6 @@ const ExperiencesPage = () => {
             <article 
               key={experience.id}
               className="card"
-              style={{
-                '--moon-clr': experience.color,
-                '--animation-duration': '8s'
-              }}
               onMouseEnter={() => setHoveredCard(experience.id)}
               onMouseLeave={() => setHoveredCard(null)}
             >
