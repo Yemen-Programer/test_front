@@ -40,17 +40,17 @@ const ContentTable = ({ contents, onEdit, onDelete }: ContentTableProps) => {
   return map[type] || type;
 };
 
-
 const getRegionLabel = (region: string) => {
-    const map = {
-      'northern': 'المنطقة الشمالية',
-      'eastern': 'المنطقة الشرقية',
-      'central': 'المنطقة الوسطى',
-      'western': 'المنطقة الغربية',
-      'southern': 'المنطقة الجنوبية'
-    };
-    return map[region] || region;
+  const map: Record<string, string> = {
+    northern: "المنطقة الشمالية",
+    eastern: "المنطقة الشرقية",
+    central: "المنطقة الوسطى",
+    western: "المنطقة الغربية",
+    southern: "المنطقة الجنوبية",
   };
+
+  return map[region] ?? region;
+};
 
   const sortedData = [...contents].sort((a, b) => {
     if (!sortConfig.key) return 0;
