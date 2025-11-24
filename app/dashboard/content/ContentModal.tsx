@@ -19,7 +19,7 @@ const ContentModal = ({ isOpen, onClose, onSave, content }: ContentModalProps) =
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [region, setRegion] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<File | null>(null);
   const [oldImage, setOldImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
