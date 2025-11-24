@@ -2,8 +2,22 @@ import React, { useState } from "react";
 import { ArrowUpDown, ArrowUp, ArrowDown, Edit, Trash2, Eye, ChevronRight, ChevronLeft, ChevronsRight, ChevronsLeft } from "lucide-react";
 
 const BASE_URL = "http://localhost:5000"; // ← عدل حسب السيرفر
+interface ContentItem {
+  id: number;
+  title: string;
+  description: string;
+  type: string;
+  region: string;
+  image?: string | null;
+}
 
-const ContentTable = ({ contents, onEdit, onDelete }) => {
+interface ContentTableProps {
+  contents: ContentItem[];
+  onEdit: (content: ContentItem) => void;
+  onDelete: (id: number) => void;
+}
+
+const ContentTable = ({ contents, onEdit, onDelete }: ContentTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [selectedImage, setSelectedImage] = useState(null);
