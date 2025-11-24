@@ -152,7 +152,11 @@ const ContentModal = ({ isOpen, onClose, onSave, content }: ContentModalProps) =
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={(e) => {
+              const file = e.target.files?.[0] ?? null;
+              setImage(file);
+            }}
+
               className="file-input"
             />
           </div>
