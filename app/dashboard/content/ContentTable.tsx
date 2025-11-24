@@ -23,8 +23,7 @@ const ContentTable = ({ contents, onEdit, onDelete }: ContentTableProps) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const perPage = 10;
-
-  const getTypeLabel = (type) => {
+const getTypeLabel = (type: string) => {
     const map = {
       'heritage': 'المعالم التراثية',
       'intangible-oral': 'التراث الشفوي',
@@ -39,7 +38,7 @@ const ContentTable = ({ contents, onEdit, onDelete }: ContentTableProps) => {
     return map[type] || type;
   };
 
-  const getRegionLabel = (region) => {
+const getRegionLabel = (region: string) => {
     const map = {
       'northern': 'المنطقة الشمالية',
       'eastern': 'المنطقة الشرقية',
