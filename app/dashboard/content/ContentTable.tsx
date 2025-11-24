@@ -23,20 +23,23 @@ const ContentTable = ({ contents, onEdit, onDelete }: ContentTableProps) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const perPage = 10;
-const getTypeLabel = (type: string) => {
-    const map = {
-      'heritage': 'المعالم التراثية',
-      'intangible-oral': 'التراث الشفوي',
-      'intangible-crafts': 'الحرف اليدوية',
-      'intangible-folklore': 'الفلكلور',
-      'clothing-men': 'الزي الرجالي',
-      'clothing-women': 'الزي النسائي',
-      'clothing-boys': 'زي البنين',
-      'clothing-girls': 'زي البنات',
-      'food': 'الأكلات الشعبية'
-    };
-    return map[type] || type;
+
+  const getTypeLabel = (type: string) => {
+  const map: Record<string, string> = {
+    "heritage": "المعالم التراثية",
+    "intangible-oral": "التراث الشفوي",
+    "intangible-crafts": "الحرف اليدوية",
+    "intangible-folklore": "الفلكلور",
+    "clothing-men": "الزي الرجالي",
+    "clothing-women": "الزي النسائي",
+    "clothing-boys": "زي البنين",
+    "clothing-girls": "زي البنات",
+    "food": "الأكلات الشعبية",
   };
+
+  return map[type] || type;
+};
+
 
 const getRegionLabel = (region: string) => {
     const map = {
