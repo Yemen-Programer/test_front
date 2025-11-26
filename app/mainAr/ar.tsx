@@ -18,7 +18,13 @@ const ARWebXR = ({ modelUrl, onClose }: ARWebXRProps) => {
 
     // 🔥 كود WebXR يبدأ فقط بعد السماح بالكاميرا
 
-    let renderer, scene, camera, controller, reticle, model;
+let renderer: THREE.WebGLRenderer;
+let scene: THREE.Scene;
+let camera: THREE.PerspectiveCamera;
+let controller: THREE.Group;
+let reticle: THREE.Mesh;
+let model: THREE.Object3D | null = null;
+
 
     scene = new THREE.Scene();
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
