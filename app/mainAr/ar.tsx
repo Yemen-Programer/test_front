@@ -79,15 +79,34 @@ const ARWebXR = ({ modelUrl }: ARWebXRProps) => {
       let hitTestSource: XRHitTestSource | null = null;
       let referenceSpace: XRReferenceSpace;
 
+session.requestReferenceSpace("viewer").then((space) => {
+  const s = session as XRSession;
+
+  if (
+    s &&
+    "requestHitTestSource" in s &&
+    typeof s.requestHitTestSource === "function"
+  ) {
+    s.requestHitTestSource({ space }).then((source) => {
+      hitTestSource = source;
+    });
+  }
+});
+
       session.requestReferenceSpace("viewer").then((space) => {
-    
-      if ("requestHitTestSource" in session && typeof session.requestHitTestSource === "function") {
-        session.requestHitTestSource({ space }).then((source) => {
-          hitTestSource = source;
-        });
-      }
-      });
-      
+  const s = session as XRSession;
+
+  if (
+    s &&
+    "requestHitTestSource" in s &&
+    typeof s.requestHitTestSource === "function"
+  ) {
+    s.requestHitTestSource({ space }).then((source) => {
+      hitTestSource = source;
+    });
+  }
+});
+
 
       session.requestReferenceSpace("local-floor").then((refSpace) => {
         referenceSpace = refSpace;
