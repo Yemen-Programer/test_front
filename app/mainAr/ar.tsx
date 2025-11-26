@@ -80,12 +80,12 @@ const ARWebXR = ({ modelUrl }: ARWebXRProps) => {
       let referenceSpace: XRReferenceSpace;
 
       session.requestReferenceSpace("viewer").then((space) => {
-      if (session.requestHitTestSource) {
+    
+      if ("requestHitTestSource" in session && typeof session.requestHitTestSource === "function") {
         session.requestHitTestSource({ space }).then((source) => {
           hitTestSource = source;
         });
       }
-
       });
       
 
