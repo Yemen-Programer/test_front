@@ -65,13 +65,14 @@ const ARWebXR = ({ modelUrl }: ARWebXRProps) => {
       renderer.xr.setSession(session);
 
       controller = renderer.xr.getController(0);
-      controller.addEventListener("select", () => {
-        if (model && reticle.visible) {
-          const clone = model.clone();
-          clone.position.copy(reticle.position);
-          scene.add(clone);
-        }
-      });
+          (controller as any).addEventListener("select", () => {
+          if (model && reticle.visible) {
+            const clone = model.clone();
+            clone.position.copy(reticle.position);
+            scene.add(clone);
+          }
+        });
+
 
       scene.add(controller);
 
