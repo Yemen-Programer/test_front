@@ -9,41 +9,46 @@ interface ARWebXRProps {
   modelUrl: string;
   onClose?: () => void;
 }
-const ARWebXR = ({ modelUrl, onClose }: ARWebXRProps) => {
-  const mountRef = useRef(null);
+
+const ARWebXR = ({ modelUrl }: ARWebXRProps) => {
+  const mountRef = useRef<HTMLDivElement | null>(null);
   const [cameraAllowed, setCameraAllowed] = useState(false);
 
   useEffect(() => {
     if (!cameraAllowed) return;
 
-    // 🔥 كود WebXR يبدأ فقط بعد السماح بالكاميرا
+    let renderer: THREE.WebGLRenderer;
+    let scene: THREE.Scene;
+    let camera: THREE.PerspectiveCamera;
+    let controller: THREE.Group;
+    let reticle: THREE.Mesh;
+    let model: THREE.Object3D | null = null;
 
-let renderer: THREE.WebGLRenderer;
-let scene: THREE.Scene;
-let camera: THREE.PerspectiveCamera;
-let controller: THREE.Group;
-let reticle: THREE.Mesh;
-let model: THREE.Object3D | null = null;
+    if (!mountRef.current) return; // ⛔ منع الوصول لـ null
 
-
+    // Scene + Renderer
     scene = new THREE.Scene();
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.xr.enabled = true;
     renderer.setSize(window.innerWidth, window.innerHeight);
+
     mountRef.current.appendChild(renderer.domElement);
 
+    // Camera
     camera = new THREE.PerspectiveCamera();
 
+    // Light
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
+    // Load model
     const loader = new GLTFLoader();
     loader.load(modelUrl, (gltf) => {
       model = gltf.scene;
       model.scale.set(0.5, 0.5, 0.5);
     });
 
-    // reticle
+    // Reticle
     const geo = new THREE.RingGeometry(0.08, 0.1, 32);
     const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     reticle = new THREE.Mesh(geo, mat);
@@ -51,8 +56,12 @@ let model: THREE.Object3D | null = null;
     reticle.visible = false;
     scene.add(reticle);
 
-    const sessionInit = { requiredFeatures: ["hit-test", "local-floor"] };
-    navigator.xr.requestSession("immersive-ar", sessionInit).then((session) => {
+    // WebXR Session
+    const sessionInit: XRSessionInit = {
+      requiredFeatures: ["hit-test", "local-floor"],
+    };
+
+    navigator.xr?.requestSession("immersive-ar", sessionInit).then((session) => {
       renderer.xr.setSession(session);
 
       controller = renderer.xr.getController(0);
@@ -63,47 +72,64 @@ let model: THREE.Object3D | null = null;
           scene.add(clone);
         }
       });
+
       scene.add(controller);
 
-      let hitTestSource = null;
-      const referenceSpace = renderer.xr.getReferenceSpace();
+      let hitTestSource: XRHitTestSource | null = null;
+      let referenceSpace: XRReferenceSpace;
 
       session.requestReferenceSpace("viewer").then((space) => {
-        session.requestHitTestSource({ space }).then((src) => {
-          hitTestSource = src;
+        session.requestHitTestSource({ space }).then((source) => {
+          hitTestSource = source;
         });
       });
 
-      renderer.setAnimationLoop((t, frame) => {
-        if (frame && hitTestSource) {
-          const viewerPose = frame.getViewerPose(referenceSpace);
-          const hits = frame.getHitTestResults(hitTestSource);
+      session.requestReferenceSpace("local-floor").then((refSpace) => {
+        referenceSpace = refSpace;
 
-          if (hits.length > 0) {
-            const hitPose = hits[0].getPose(referenceSpace);
-            reticle.visible = true;
-            reticle.position.set(
-              hitPose.transform.position.x,
-              hitPose.transform.position.y,
-              hitPose.transform.position.z
-            );
-          } else {
-            reticle.visible = false;
+        renderer.setAnimationLoop((time, frame) => {
+          if (frame && hitTestSource) {
+            const viewerPose = frame.getViewerPose(referenceSpace);
+
+            if (viewerPose) {
+              const hitTestResults = frame.getHitTestResults(hitTestSource);
+
+              if (hitTestResults.length > 0) {
+                const hitPose = hitTestResults[0].getPose(referenceSpace);
+                if (hitPose) {
+                  reticle.visible = true;
+                  reticle.position.set(
+                    hitPose.transform.position.x,
+                    hitPose.transform.position.y,
+                    hitPose.transform.position.z
+                  );
+                }
+              } else {
+                reticle.visible = false;
+              }
+            }
           }
-        }
-        renderer.render(scene, camera);
+
+          renderer.render(scene, camera);
+        });
       });
     });
 
-    return () => renderer.dispose();
+    return () => {
+      renderer?.dispose();
+    };
   }, [cameraAllowed]);
 
-  // 🔥 زر إذن الكاميرا يظهر أولاً
   if (!cameraAllowed) {
     return <CameraPermissionButton onGranted={() => setCameraAllowed(true)} />;
   }
 
-  return <div ref={mountRef} style={{ width: "100vw", height: "100vh" }} />;
+  return (
+    <div
+      ref={mountRef}
+      style={{ width: "100vw", height: "100vh", overflow: "hidden" }}
+    />
+  );
 };
 
 export default ARWebXR;
