@@ -80,10 +80,14 @@ const ARWebXR = ({ modelUrl }: ARWebXRProps) => {
       let referenceSpace: XRReferenceSpace;
 
       session.requestReferenceSpace("viewer").then((space) => {
+      if (session.requestHitTestSource) {
         session.requestHitTestSource({ space }).then((source) => {
           hitTestSource = source;
         });
+      }
+
       });
+      
 
       session.requestReferenceSpace("local-floor").then((refSpace) => {
         referenceSpace = refSpace;
