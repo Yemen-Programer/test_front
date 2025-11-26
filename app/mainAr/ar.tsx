@@ -9,7 +9,7 @@ interface ARWebXRProps {
   modelUrl: string;
   onClose?: () => void;
 }
-const ARWebXR = ({ modelUrl, onClose }) => {
+const ARWebXR = ({ modelUrl, onClose }: ARWebXRProps) => {
   const mountRef = useRef(null);
   const [cameraAllowed, setCameraAllowed] = useState(false);
 
