@@ -12,18 +12,18 @@ interface ARWebXRProps {
 
 const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [cameraAllowed, setCameraAllowed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [modelLoaded, setModelLoaded] = useState(false);
+  const [cameraActive, setCameraActive] = useState(false);
 
   useEffect(() => {
     if (!cameraAllowed) return;
 
     let renderer: THREE.WebGLRenderer | null = null;
-    let scene: THREE.Scene;
-    let camera: THREE.PerspectiveCamera;
+    let scene: THREE.Scene | null = null;
+    let camera: THREE.PerspectiveCamera | null = null;
     let model: THREE.Object3D | null = null;
     let animationFrameId: number;
 
@@ -33,122 +33,129 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
     // تنظيف أي عناصر موجودة مسبقاً
     mount.innerHTML = '';
 
-    // إنشاء فيديو للكاميرا
-    const video = document.createElement('video');
-    videoRef.current = video;
-    video.setAttribute('playsinline', 'true');
-    video.style.position = 'absolute';
-    video.style.width = '100%';
-    video.style.height = '100%';
-    video.style.objectFit = 'cover';
-    video.style.zIndex = '1';
-    mount.appendChild(video);
-
-    // Scene
-    scene = new THREE.Scene();
-
-    // Renderer - مع خلفية شفافة
-    renderer = new THREE.WebGLRenderer({ 
-      alpha: true, 
-      antialias: true 
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.top = '0';
-    renderer.domElement.style.left = '0';
-    renderer.domElement.style.zIndex = '2'; // فوق الفيديو
-    mount.appendChild(renderer.domElement);
-
-    // Camera - مع إعدادات مناسبة للواقع المعزز
-    camera = new THREE.PerspectiveCamera(
-      45, // مجال رؤية أوسع
-      window.innerWidth / window.innerHeight, 
-      0.1, 
-      100
-    );
-    camera.position.set(0, 0, 0);
-
-    // إضاءة محسنة
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
-    scene.add(ambientLight);
-    
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
-
-    // نقطة مرجعية للمساعدة في التصحيح
-    const axesHelper = new THREE.AxesHelper(1);
-    scene.add(axesHelper);
-
-    // شبكة للمساعدة في التصحيح
-    const gridHelper = new THREE.GridHelper(10, 10);
-    scene.add(gridHelper);
-
-    console.log("🚀 Starting model load:", modelUrl);
-
-    // Load 3D model
-    const loader = new GLTFLoader();
-    loader.load(
-      modelUrl,
-      (gltf) => {
-        console.log("✅ Model loaded successfully:", gltf);
-        model = gltf.scene;
-        
-        // ضبط المقياس والموضع
-        model.scale.set(0.5, 0.5, 0.5);
-        model.position.set(0, 0, -2); // أبعد قليلاً عن الكاميرا
-        
-        // تدوير المودل ليكون في الاتجاه الصحيح
-        model.rotation.set(0, 0, 0);
-        
-        scene.add(model);
-        setModelLoaded(true);
-        setLoading(false);
-        
-        console.log("🎯 Model added to scene at position:", model.position);
-      },
-      (progress) => {
-        // تتبع التقدم في التحميل
-        console.log("📥 Loading progress:", progress);
-        if (progress.total > 0) {
-          const percent = (progress.loaded / progress.total) * 100;
-          console.log(`📥 Model loading: ${percent.toFixed(2)}%`);
-        }
-      },
-      (error) => {
-        console.error("❌ Failed to load model:", error);
-        setError(`فشل تحميل النموذج: ${error.message}`);
-        setLoading(false);
-      }
-    );
-
-    // بدء تشغيل الكاميرا الخلفية
-    const startCamera = async () => {
+    const initAR = async () => {
       try {
+        // 1. أولاً: تشغيل الكاميرا
+        console.log("📹 Starting camera...");
         const constraints = {
           video: {
-            facingMode: 'environment', // استخدام الكاميرا الخلفية
+            facingMode: 'environment',
             width: { ideal: 1280 },
             height: { ideal: 720 }
           }
         };
 
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = stream;
+        setCameraActive(true);
         
-        video.onloadedmetadata = () => {
-          video.play();
-          console.log("📹 Camera started successfully");
-        };
+        // إنشاء فيديو للكاميرا
+        const video = document.createElement('video');
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('autoplay', 'true');
+        video.style.position = 'absolute';
+        video.style.width = '100%';
+        video.style.height = '100%';
+        video.style.objectFit = 'cover';
+        video.style.zIndex = '1';
+        video.srcObject = stream;
+        mount.appendChild(video);
 
-        // Animation loop محسنة
+        // انتظار حتى يكون الفيديو جاهزاً
+        await new Promise((resolve) => {
+          video.onloadedmetadata = () => {
+            video.play();
+            console.log("✅ Camera ready");
+            resolve(true);
+          };
+        });
+
+        // 2. ثانياً: تهيئة Three.js
+        console.log("🚀 Initializing Three.js...");
+        
+        // Scene
+        scene = new THREE.Scene();
+
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ 
+          alpha: true, 
+          antialias: true 
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = '0';
+        renderer.domElement.style.left = '0';
+        renderer.domElement.style.zIndex = '2';
+        renderer.domElement.style.pointerEvents = 'none'; // السماح بالتفاعل مع الفيديو
+        mount.appendChild(renderer.domElement);
+
+        // Camera
+        camera = new THREE.PerspectiveCamera(
+          60, 
+          window.innerWidth / window.innerHeight, 
+          0.1, 
+          1000
+        );
+        camera.position.set(0, 1.5, 0);
+
+        // إضاءة محسنة
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        // إضافة شبكة للمساعدة في التوجيه (اختياري)
+        const gridHelper = new THREE.GridHelper(10, 10);
+        gridHelper.position.y = -1;
+        scene.add(gridHelper);
+
+        // 3. ثالثاً: تحميل النموذج 3D
+        console.log("📦 Loading 3D model...");
+        const loader = new GLTFLoader();
+        
+        loader.load(
+          modelUrl,
+          (gltf) => {
+            console.log("✅ Model loaded successfully");
+            model = gltf.scene;
+            
+            // ضبط المقياس والموضع
+            model.scale.set(0.3, 0.3, 0.3);
+            model.position.set(0, 0, -1.5); // وضع النموذج أمام الكاميرا
+            
+            // تدوير النموذج قليلاً
+            model.rotation.y = Math.PI / 4;
+            
+            scene.add(model);
+            setModelLoaded(true);
+            setLoading(false);
+            
+            console.log("🎯 Model positioned at:", model.position);
+          },
+          (progress) => {
+            // تتبع التقدم في التحميل
+            const percent = progress.lengthComputable 
+              ? (progress.loaded / progress.total) * 100 
+              : 0;
+            console.log(`📥 Model loading: ${percent.toFixed(1)}%`);
+          },
+          (error) => {
+            console.error("❌ Failed to load model:", error);
+            setError(`فشل تحميل النموذج: ${error.message}`);
+            setLoading(false);
+          }
+        );
+
+        // 4. رابعاً: بدء animation loop
+        console.log("🎬 Starting animation loop...");
         const animate = () => {
           animationFrameId = requestAnimationFrame(animate);
 
           if (model) {
-            // تدوير المودل ببطء
-            model.rotation.y += 0.005;
+            // تدوير النموذج ببطء
+            model.rotation.y += 0.01;
           }
 
           if (renderer && scene && camera) {
@@ -159,13 +166,13 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
         animate();
 
       } catch (err) {
-        console.error('❌ Camera error:', err);
-        setError('تعذر الوصول إلى الكاميرا الخلفية');
+        console.error('❌ AR initialization error:', err);
+        setError('تعذر الوصول إلى الكاميرا الخلفية أو حدث خطأ في التهيئة');
         setLoading(false);
       }
     };
 
-    startCamera();
+    initAR();
 
     // Handle window resize
     const handleResize = () => {
@@ -180,33 +187,44 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
 
     // Cleanup
     return () => {
+      console.log("🧹 Cleaning up AR scene...");
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationFrameId);
       
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
-        tracks.forEach(track => track.stop());
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      
+      // إيقاف كاميرا الفيديو
+      if (mountRef.current) {
+        const video = mountRef.current.querySelector('video');
+        if (video && video.srcObject) {
+          const tracks = (video.srcObject as MediaStream).getTracks();
+          tracks.forEach(track => track.stop());
+        }
       }
       
       if (renderer) {
         renderer.dispose();
       }
+      
+      setCameraActive(false);
     };
   }, [cameraAllowed, modelUrl]);
-
-  // إضافة console.log للتتبع
-  console.log("🔄 Component state:", { cameraAllowed, modelLoaded, loading, error });
 
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-red-50">
-        <div className="text-red-600 text-xl mb-4">⚠️ {error}</div>
+        <div className="text-red-600 text-xl mb-4 text-center">
+          ⚠️ {error}
+        </div>
         <button 
           onClick={() => {
             setError(null);
             setCameraAllowed(false);
+            setLoading(true);
+            setModelLoaded(false);
           }}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
+          className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
         >
           المحاولة مرة أخرى
         </button>
@@ -216,11 +234,17 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
 
   if (!cameraAllowed) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-        <CameraPermissionButton onGranted={() => setCameraAllowed(true)} />
-        <p className="mt-4 text-gray-600 text-center px-4">
-          يرجى السماح بالوصول إلى الكاميرا الخلفية لعرض النموذج ثلاثي الأبعاد في الواقع المعزز
-        </p>
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4">
+        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="text-6xl mb-4">📱</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            الواقع المعزز
+          </h2>
+          <p className="text-gray-600 mb-6">
+            قم بتمكين الكاميرا الخلفية لعرض النموذج ثلاثي الأبعاد في بيئتك الحقيقية
+          </p>
+          <CameraPermissionButton onGranted={() => setCameraAllowed(true)} />
+        </div>
       </div>
     );
   }
@@ -234,31 +258,50 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
           height: "100vh", 
           overflow: "hidden",
           position: "relative",
-          background: "black" // خلفية سوداء مؤقتة
+          background: "black"
         }}
       />
       
       {/* شاشة التحميل */}
       {loading && (
-        <div className="absolute top-4 left-4 right-4 bg-blue-500 text-white p-3 rounded text-center z-30">
-          <p>جاري تحميل النموذج ثلاثي الأبعاد...</p>
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 z-30">
+          <div className="bg-white rounded-2xl p-6 text-center max-w-xs">
+            <div className="animate-spin border-b-2 border-blue-500 rounded-full h-12 w-12 mx-auto mb-4"></div>
+            <p className="text-gray-800 font-medium">جاري التحميل...</p>
+            <p className="text-gray-600 text-sm mt-2">
+              {cameraActive ? "جاري تحميل النموذج 3D" : "جاري تهيئة الكاميرا"}
+            </p>
+          </div>
         </div>
       )}
       
       {/* معلومات للمستخدم */}
-      <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-70 text-white p-3 rounded text-center z-30">
+      <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-2xl text-center z-20">
         {modelLoaded ? (
-          <p>✅ النموذج ثلاثي الأبعاد معروض بنجاح!</p>
+          <div>
+            <p className="font-medium">✅ النموذج ثلاثي الأبعاد معروض بنجاح!</p>
+            <p className="text-sm opacity-75 mt-1">حرك الهاتف لرؤية النموذج من زوايا مختلفة</p>
+          </div>
+        ) : cameraActive ? (
+          <div>
+            <p className="font-medium">📹 الكاميرا الخلفية نشطة</p>
+            <p className="text-sm opacity-75 mt-1">جاري تحميل النموذج ثلاثي الأبعاد...</p>
+          </div>
         ) : (
-          <p>📹 الكاميرا الخلفية نشطة - جاري تحميل النموذج...</p>
+          <div>
+            <p className="font-medium">⏳ جاري التهيئة...</p>
+          </div>
         )}
-        <p className="text-sm opacity-75 mt-1">حرك الهاتف لرؤية النموذج من زوايا مختلفة</p>
       </div>
 
       {/* زر الإغلاق */}
       <button
-        onClick={() => setCameraAllowed(false)}
-        className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full z-30"
+        onClick={() => {
+          setCameraAllowed(false);
+          setModelLoaded(false);
+          setLoading(true);
+        }}
+        className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full z-20 shadow-lg transition-colors"
       >
         ✕
       </button>
