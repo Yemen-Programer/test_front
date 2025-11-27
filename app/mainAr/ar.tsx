@@ -63,14 +63,13 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
     reticle.visible = false;
     scene.add(reticle);
 
-    // WebXR Session
-    const sessionInit: XRSessionInit = {
-      requiredFeatures: ["hit-test", "local-floor"],
-    };
+const sessionInit: XRSessionInit = {
+  requiredFeatures: ["hit-test", "local-floor"],
+  optionalFeatures: ["dom-overlay", "camera-access"],
+  domOverlay: { root: mount }
+};
 
-    navigator.xr
-      ?.requestSession("immersive-ar", sessionInit)
-      .then((session) => {
+navigator.xr?.requestSession("immersive-ar", sessionInit).then((session) => {
         if (!renderer) return;
 
         renderer.xr.setSession(session);
