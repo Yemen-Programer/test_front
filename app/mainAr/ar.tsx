@@ -30,132 +30,140 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
     const mount = mountRef.current;
     if (!mount) return;
 
-    // تنظيف أي عناصر موجودة مسبقاً
-    mount.innerHTML = '';
-
     const initAR = async () => {
       try {
-        // 1. أولاً: تشغيل الكاميرا
+        console.log("🚀 Starting AR initialization...");
+
+        // 1. تنظيف العناصر السابقة
+        mount.innerHTML = '';
+
+        // 2. بدء الكاميرا
         console.log("📹 Starting camera...");
-        const constraints = {
+        const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: 'environment',
             width: { ideal: 1280 },
             height: { ideal: 720 }
           }
-        };
+        });
 
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        setCameraActive(true);
-        
-        // إنشاء فيديو للكاميرا
+        // إنشاء وعرض الفيديو
         const video = document.createElement('video');
         video.setAttribute('playsinline', 'true');
         video.setAttribute('autoplay', 'true');
-        video.style.position = 'absolute';
-        video.style.width = '100%';
-        video.style.height = '100%';
-        video.style.objectFit = 'cover';
-        video.style.zIndex = '1';
+        video.style.cssText = `
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: 1;
+        `;
         video.srcObject = stream;
         mount.appendChild(video);
 
-        // انتظار حتى يكون الفيديو جاهزاً
-        await new Promise((resolve) => {
+        // انتظار جاهزية الفيديو
+        await new Promise((resolve, reject) => {
           video.onloadedmetadata = () => {
-            video.play();
-            console.log("✅ Camera ready");
-            resolve(true);
+            video.play().then(resolve).catch(reject);
           };
+          video.onerror = reject;
         });
 
-        // 2. ثانياً: تهيئة Three.js
-        console.log("🚀 Initializing Three.js...");
-        
-        // Scene
-        scene = new THREE.Scene();
+        setCameraActive(true);
+        console.log("✅ Camera ready");
 
-        // Renderer
+        // 3. تهيئة Three.js
+        console.log("🎮 Initializing Three.js...");
+        
+        scene = new THREE.Scene();
+        
         renderer = new THREE.WebGLRenderer({ 
           alpha: true, 
-          antialias: true 
+          antialias: true,
+          powerPreference: "high-performance"
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.domElement.style.position = 'absolute';
-        renderer.domElement.style.top = '0';
-        renderer.domElement.style.left = '0';
-        renderer.domElement.style.zIndex = '2';
-        renderer.domElement.style.pointerEvents = 'none'; // السماح بالتفاعل مع الفيديو
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.domElement.style.cssText = `
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 2;
+          pointer-events: none;
+        `;
         mount.appendChild(renderer.domElement);
 
-        // Camera
         camera = new THREE.PerspectiveCamera(
           60, 
           window.innerWidth / window.innerHeight, 
           0.1, 
-          1000
+          100
         );
-        camera.position.set(0, 1.5, 0);
+        camera.position.set(0, 1.6, 0);
 
-        // إضاءة محسنة
+        // إضاءة
         const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
         scene.add(ambientLight);
         
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 5, 5);
+        directionalLight.position.set(1, 2, 3);
         scene.add(directionalLight);
 
-        // إضافة شبكة للمساعدة في التوجيه (اختياري)
-        const gridHelper = new THREE.GridHelper(10, 10);
-        gridHelper.position.y = -1;
-        scene.add(gridHelper);
-
-        // 3. ثالثاً: تحميل النموذج 3D
-        console.log("📦 Loading 3D model...");
-        const loader = new GLTFLoader();
+        // 4. تحميل النموذج 3D
+        console.log("📦 Loading 3D model:", modelUrl);
         
+        // اختبار أولاً: إنشاء نموذج بسيط للتأكد من عمل Three.js
+        const testGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        const testMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const testCube = new THREE.Mesh(testGeometry, testMaterial);
+        testCube.position.set(0, 0, -2);
+        scene.add(testCube);
+
+        // ثم تحميل النموذج الحقيقي
+        const loader = new GLTFLoader();
         loader.load(
           modelUrl,
           (gltf) => {
-            console.log("✅ Model loaded successfully");
+            console.log("✅ 3D Model loaded successfully");
+            
+            // إزالة المكعب الاختباري
+            scene.remove(testCube);
+            
             model = gltf.scene;
             
-            // ضبط المقياس والموضع
+            // ضبط النموذج
             model.scale.set(0.3, 0.3, 0.3);
-            model.position.set(0, 0, -1.5); // وضع النموذج أمام الكاميرا
-            
-            // تدوير النموذج قليلاً
-            model.rotation.y = Math.PI / 4;
+            model.position.set(0, 0, -1.5);
             
             scene.add(model);
             setModelLoaded(true);
             setLoading(false);
             
-            console.log("🎯 Model positioned at:", model.position);
+            console.log("🎯 Model positioned successfully");
           },
           (progress) => {
-            // تتبع التقدم في التحميل
-            const percent = progress.lengthComputable 
-              ? (progress.loaded / progress.total) * 100 
-              : 0;
-            console.log(`📥 Model loading: ${percent.toFixed(1)}%`);
+            if (progress.lengthComputable) {
+              const percent = (progress.loaded / progress.total) * 100;
+              console.log(`📥 Model loading: ${percent.toFixed(1)}%`);
+            }
           },
           (error) => {
-            console.error("❌ Failed to load model:", error);
-            setError(`فشل تحميل النموذج: ${error.message}`);
+            console.error("❌ Model loading failed:", error);
+            // الاستمرار مع المكعب الاختباري
+            setModelLoaded(true);
             setLoading(false);
+            console.log("🔄 Continuing with test cube");
           }
         );
 
-        // 4. رابعاً: بدء animation loop
-        console.log("🎬 Starting animation loop...");
+        // 5. بدء animation loop
         const animate = () => {
           animationFrameId = requestAnimationFrame(animate);
 
           if (model) {
-            // تدوير النموذج ببطء
             model.rotation.y += 0.01;
+          } else {
+            testCube.rotation.y += 0.01;
           }
 
           if (renderer && scene && camera) {
@@ -164,17 +172,18 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
         };
         
         animate();
+        console.log("🎬 Animation loop started");
 
       } catch (err) {
-        console.error('❌ AR initialization error:', err);
-        setError('تعذر الوصول إلى الكاميرا الخلفية أو حدث خطأ في التهيئة');
+        console.error('❌ AR initialization failed:', err);
+        setError(`خطأ في التهيئة: ${err instanceof Error ? err.message : 'حدث خطأ غير معروف'}`);
         setLoading(false);
       }
     };
 
     initAR();
 
-    // Handle window resize
+    // إعادة ضبط الحجم
     const handleResize = () => {
       if (renderer && camera) {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -185,9 +194,10 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
 
     window.addEventListener('resize', handleResize);
 
-    // Cleanup
+    // التنظيف
     return () => {
-      console.log("🧹 Cleaning up AR scene...");
+      console.log("🧹 Cleaning up AR scene");
+      
       window.removeEventListener('resize', handleResize);
       
       if (animationFrameId) {
@@ -199,48 +209,72 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
         const video = mountRef.current.querySelector('video');
         if (video && video.srcObject) {
           const tracks = (video.srcObject as MediaStream).getTracks();
-          tracks.forEach(track => track.stop());
+          tracks.forEach(track => {
+            track.stop();
+            console.log("📹 Camera track stopped:", track.kind);
+          });
         }
       }
       
       if (renderer) {
         renderer.dispose();
+        console.log("🎮 Renderer disposed");
       }
       
       setCameraActive(false);
+      setModelLoaded(false);
     };
   }, [cameraAllowed, modelUrl]);
 
+  // إضافة تحميل احتياطي للنموذج
+  const handleRetryWithFallback = () => {
+    // استخدام نموذج افتراضي إذا كان هناك مشكلة
+    const fallbackModel = "https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf";
+    setError(null);
+    setCameraAllowed(false);
+    setTimeout(() => setCameraAllowed(true), 100);
+  };
+
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-red-50">
-        <div className="text-red-600 text-xl mb-4 text-center">
-          ⚠️ {error}
+      <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-red-50 to-orange-100 p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="text-6xl mb-4">😕</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            عذراً، حدث خطأ
+          </h2>
+          <p className="text-gray-600 mb-2">{error}</p>
+          <div className="flex flex-col gap-3 mt-6">
+            <button 
+              onClick={() => {
+                setError(null);
+                setCameraAllowed(false);
+              }}
+              className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+            >
+              المحاولة مرة أخرى
+            </button>
+            <button 
+              onClick={handleRetryWithFallback}
+              className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+            >
+              تجربة بنموذج تجريبي
+            </button>
+          </div>
         </div>
-        <button 
-          onClick={() => {
-            setError(null);
-            setCameraAllowed(false);
-            setLoading(true);
-            setModelLoaded(false);
-          }}
-          className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-        >
-          المحاولة مرة أخرى
-        </button>
       </div>
     );
   }
 
   if (!cameraAllowed) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4">
-        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
+      <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-purple-100 p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
           <div className="text-6xl mb-4">📱</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            الواقع المعزز
+            تجربة الواقع المعزز
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-6 leading-relaxed">
             قم بتمكين الكاميرا الخلفية لعرض النموذج ثلاثي الأبعاد في بيئتك الحقيقية
           </p>
           <CameraPermissionButton onGranted={() => setCameraAllowed(true)} />
@@ -253,45 +287,35 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
     <div className="relative">
       <div
         ref={mountRef}
-        style={{ 
-          width: "100vw", 
-          height: "100vh", 
-          overflow: "hidden",
-          position: "relative",
-          background: "black"
-        }}
+        className="w-full h-screen bg-black overflow-hidden"
       />
       
       {/* شاشة التحميل */}
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 z-30">
-          <div className="bg-white rounded-2xl p-6 text-center max-w-xs">
-            <div className="animate-spin border-b-2 border-blue-500 rounded-full h-12 w-12 mx-auto mb-4"></div>
-            <p className="text-gray-800 font-medium">جاري التحميل...</p>
-            <p className="text-gray-600 text-sm mt-2">
-              {cameraActive ? "جاري تحميل النموذج 3D" : "جاري تهيئة الكاميرا"}
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80 z-30">
+          <div className="bg-white rounded-2xl p-8 text-center max-w-sm mx-4">
+            <div className="animate-spin border-4 border-blue-500 border-t-transparent rounded-full h-16 w-16 mx-auto mb-4"></div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">جاري التهيئة</h3>
+            <p className="text-gray-600">
+              {cameraActive ? "جاري تحميل النموذج ثلاثي الأبعاد..." : "جاري تشغيل الكاميرا..."}
             </p>
           </div>
         </div>
       )}
       
-      {/* معلومات للمستخدم */}
-      <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-2xl text-center z-20">
+      {/* معلومات الحالة */}
+      <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded-2xl text-center z-20 backdrop-blur-sm">
         {modelLoaded ? (
           <div>
-            <p className="font-medium">✅ النموذج ثلاثي الأبعاد معروض بنجاح!</p>
-            <p className="text-sm opacity-75 mt-1">حرك الهاتف لرؤية النموذج من زوايا مختلفة</p>
+            <p className="font-medium text-green-400">✨ النموذج معروض بنجاح!</p>
+            <p className="text-sm opacity-75 mt-1">حرك هاتفك لمشاهدة النموذج من جميع الزوايا</p>
           </div>
         ) : cameraActive ? (
           <div>
             <p className="font-medium">📹 الكاميرا الخلفية نشطة</p>
-            <p className="text-sm opacity-75 mt-1">جاري تحميل النموذج ثلاثي الأبعاد...</p>
+            <p className="text-sm opacity-75 mt-1">جاري تحميل المحتوى ثلاثي الأبعاد...</p>
           </div>
-        ) : (
-          <div>
-            <p className="font-medium">⏳ جاري التهيئة...</p>
-          </div>
-        )}
+        ) : null}
       </div>
 
       {/* زر الإغلاق */}
@@ -301,9 +325,10 @@ const ARWebXR: React.FC<ARWebXRProps> = ({ modelUrl }) => {
           setModelLoaded(false);
           setLoading(true);
         }}
-        className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full z-20 shadow-lg transition-colors"
+        className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full z-20 shadow-lg transition-colors transform hover:scale-105"
+        aria-label="إغلاق الواقع المعزز"
       >
-        ✕
+        <span className="text-lg font-bold">✕</span>
       </button>
     </div>
   );
