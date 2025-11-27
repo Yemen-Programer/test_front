@@ -1,42 +1,35 @@
+// btn.tsx
 "use client";
 
-import React, { useState } from "react";
+interface CameraPermissionButtonProps {
+  onGranted: () => void;
+}
 
-const CameraPermissionButton = ({ onGranted }: { onGranted: () => void }) => {
-  const [error, setError] = useState("");
-
+const CameraPermissionButton: React.FC<CameraPermissionButtonProps> = ({ onGranted }) => {
   const requestCameraPermission = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-
-      // إذا اشتغلت الكاميرا
-      stream.getTracks().forEach(track => track.stop()); 
+      // طلب الإذن أولاً بدون عرض الفيديو
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      
+      // إيقاف الفيديو مباشرة بعد الحصول على الإذن
+      stream.getTracks().forEach(track => track.stop());
+      
       onGranted();
-    } catch (err) {
-      setError("⚠ يجب السماح باستخدام الكاميرا للمتابعة");
-      console.error(err);
+    } catch (error) {
+      console.error('❌ Camera permission denied:', error);
+      alert('يجب السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة');
     }
   };
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "30vh" }}>
-      <button
-        onClick={requestCameraPermission}
-        style={{
-          background: "#4A148C",
-          padding: "15px 25px",
-          borderRadius: "10px",
-          color: "white",
-          fontSize: "20px",
-        }}
-      >
-        📸 اضغط للسماح باستخدام الكاميرا
-      </button>
-
-      {error && (
-        <p style={{ color: "red", marginTop: "15px" }}>{error}</p>
-      )}
-    </div>
+    <button
+      onClick={requestCameraPermission}
+      className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+    >
+      🔓 تفعيل الكاميرا للواقع المعزز
+    </button>
   );
 };
 
