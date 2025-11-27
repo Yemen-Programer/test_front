@@ -8,7 +8,7 @@ interface CameraPermissionButtonProps {
 const CameraPermissionButton: React.FC<CameraPermissionButtonProps> = ({ onGranted }) => {
   const requestCameraPermission = async () => {
     try {
-      // طلب الإذن أولاً بدون عرض الفيديو
+      // اختبار بسيط للإذن أولاً
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' } 
       });
@@ -19,16 +19,16 @@ const CameraPermissionButton: React.FC<CameraPermissionButtonProps> = ({ onGrant
       onGranted();
     } catch (error) {
       console.error('❌ Camera permission denied:', error);
-      alert('يجب السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة');
+      alert('يجب السماح بالوصول إلى الكاميرا لاستخدام خاصية الواقع المعزز');
     }
   };
 
   return (
     <button
       onClick={requestCameraPermission}
-      className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+      className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-lg font-semibold transition-colors w-full"
     >
-      🔓 تفعيل الكاميرا للواقع المعزز
+      🔓 تفعيل الكاميرا
     </button>
   );
 };
