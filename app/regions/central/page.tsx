@@ -1,6 +1,6 @@
 'use client';
 
-const NorthernRegionPage() => {
+const NorthernRegionPage = () => {
 
            return(
              <>
