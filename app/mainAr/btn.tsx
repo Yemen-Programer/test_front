@@ -6,9 +6,20 @@ interface CameraPermissionButtonProps {
 }
 
 const CameraPermissionButton: React.FC<CameraPermissionButtonProps> = ({ onGranted }) => {
-  const requestCameraPermission = async () => {
+  const requestWebXRAccess = async () => {
     try {
-      // اختبار بسيط للإذن أولاً
+      // التحقق من دعم WebXR أولاً
+      if (!navigator.xr) {
+        throw new Error("WebXR غير مدعوم في هذا المتصفح");
+      }
+
+      // التحقق من دعم AR
+      const supported = await navigator.xr.isSessionSupported('immersive-ar');
+      if (!supported) {
+        throw new Error("الواقع المعزز (AR) غير مدعوم في هذا الجهاز");
+      }
+
+      // طلب الإذن للكاميرا (مطلوب لـ WebXR)
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' } 
       });
@@ -18,17 +29,17 @@ const CameraPermissionButton: React.FC<CameraPermissionButtonProps> = ({ onGrant
       
       onGranted();
     } catch (error) {
-      console.error('❌ Camera permission denied:', error);
-      alert('يجب السماح بالوصول إلى الكاميرا لاستخدام خاصية الواقع المعزز');
+      console.error('❌ WebXR access denied:', error);
+      alert('تعذر الوصول إلى WebXR. تأكد من استخدام متصفح مدعوم مثل Chrome على Android');
     }
   };
 
   return (
     <button
-      onClick={requestCameraPermission}
-      className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-lg font-semibold transition-colors w-full"
+      onClick={requestWebXRAccess}
+      className="px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-lg font-semibold transition-colors w-full"
     >
-      🔓 تفعيل الكاميرا
+      🔮 تفعيل WebXR AR
     </button>
   );
 };
