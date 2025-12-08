@@ -572,12 +572,7 @@ const getRegionSlug = (region) => {
           {/* زر تسجيل الدخول/تسجيل الخروج */}
           {!isLoggedIn ? (
             <div className="flex gap-2">
-              <a 
-                href="/signup"
-                className="py-2 px-6 bg-[#3c1053] text-white font-medium rounded-lg hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition text-sm w-full sm:w-auto"
-              >
-                إنشاء حساب
-              </a>
+
               <a 
                 href="/login"
                 className="py-2 px-6 bg-[#3c1053] text-white font-medium rounded-lg hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition text-sm w-full sm:w-auto"
