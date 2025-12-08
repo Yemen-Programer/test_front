@@ -9,7 +9,7 @@ interface ARExperienceProps {
   onClose: () => void;
 }
 
-// تحميل المكون ديناميكياً بدون SSR
+
 const ARViewer = dynamic(() => import('./ARViewer'), {
   ssr: false,
   loading: () => (

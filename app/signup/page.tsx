@@ -2,17 +2,28 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
+import { apiService } from './services/api';
 
 export default function SignupPage() {
-  const [username, setUsername] = useState('');
+  const [name, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // معالجة إنشاء الحساب هنا
-  };
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const response = await apiService.signup(name, email, password, confirmPassword);
+    if (response.success) {
+      // go to login 
+      window.location.href = '/login';
+    }
+  } catch (error) {
+    console.error('Signup error:', error);
+    alert('حدث خطأ أثناء إنشاء الحساب');
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
@@ -29,13 +40,13 @@ export default function SignupPage() {
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* حقل اسم المستخدم */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <label htmlFor="username" className="block text-sm w-full font-medium text-gray-700 text-right sm:w-24">
+              <label htmlFor="name" className="block text-sm w-full font-medium text-gray-700 text-right sm:w-24">
                 اسم المستخدم
               </label>
               <input
-                id="username"
+                id="name"
                 type="text"
-                value={username}
+                value={name}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg outline-0 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-right"
                 required

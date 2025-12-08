@@ -2,38 +2,62 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
+import { apiService } from 'app/signup/services/api';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // معالجة تسجيل الدخول هنا
+    try {
+      const response = await apiService.login(email, password);
+      if (response.success) {
+        // حفظ بيانات المستخدم في localStorage
+        localStorage.setItem('userId', response.data.user.id);
+        localStorage.setItem('userName', response.data.user.name);
+        localStorage.setItem('userRole', response.data.user.role);
+        localStorage.setItem('userEmail', response.data.user.email);
+
+        // توجيه المستخدم بناءً على الـ role
+        switch (response.data.user.role) {
+          case 'admin':
+            window.location.href = '/dashboard/users';
+            break;
+          case 'user':
+          default:
+            window.location.href = '/home';
+            break;
+        }
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className='flex flex-col lg:flex-row gap-6 lg:gap-10 items-center w-full max-w-4xl'>
-        {/* قسم النص الترحيبي - يأخذ 1/3 من المساحة */}
+       
         <div className="text-center w-full lg:w-1/3 order-1 lg:order-1">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">ياهلا و يا مسهلا</h1>
           <p className="text-gray-600 text-base sm:text-lg">ابدأ جولتك معانا</p>
         </div>
 
-        {/* قسم الفورم - يأخذ 2/3 من المساحة */}
+    
         <div className="shadow-xl p-6 sm:p-8 w-full lg:w-2/3 bg-white rounded-xl sm:rounded-2xl order-1 lg:order-2">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            {/* حقل اسم المستخدم */}
+            {/* حقل الإيميل */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 text-right sm:w-24">
-                اسم المستخدم
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 text-right sm:w-24">
+                الايميل
               </label>
               <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg outline-0 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-right"
                 required
               />
@@ -54,7 +78,7 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* قسم زر التسجيل والرابط */}
+         
             <div className="flex flex-col-reverse sm:flex-row-reverse items-center justify-between gap-3 sm:gap-0 pt-3 sm:pt-4">
               {/* رابط إنشاء حساب جديد */}
               <Link 

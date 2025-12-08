@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
   Package, 
@@ -11,18 +11,56 @@ import {
   Image,
   FileText
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import './page.css';
 
 const DashboardLayout = ({ children, activePage }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const menuItems = [
-    { id: 'dashboard', name: 'لوحة التحكم', icon: <LayoutDashboard size={20} /> },
-    { id: 'content', name: 'إدارة المحتوى', icon: <Package size={20} /> },
-    { id: 'users', name: 'إدارة المستخدمين', icon: <Users size={20} /> },
-    { id: 'media', name: 'المكتبة الإعلامية', icon: <Image size={20} /> },
-    { id: 'settings', name: 'الإعدادات', icon: <Settings size={20} /> },
+    { id: 'dashboard/content', name: 'إدارة المحتوى', icon: <Package size={20} /> },
+    { id: 'dashboard/users', name: 'إدارة المستخدمين', icon: <Users size={20} /> },
   ];
+
+  useEffect(() => {
+    // التحقق من تسجيل الدخول والدور
+    const checkAuth = async () => {
+      try {
+        // جلب بيانات المستخدم من localStorage أو API
+        const userId = localStorage.getItem('userId');
+        const userRole = localStorage.getItem('userRole');
+        
+        if (!userId) {
+          router.push('/login');
+          return;
+        }
+        
+        // التحقق من أن المستخدم لديه دور admin
+        if (userRole !== 'admin') {
+          router.push('/UnauthorizedPage');
+          return;
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/login');
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="dashboard-loading">
+        <div className="loading-spinner"></div>
+        <p>جاري التحقق من الصلاحيات...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
@@ -42,7 +80,7 @@ const DashboardLayout = ({ children, activePage }) => {
           {menuItems.map(item => (
             <a
               key={item.id}
-              href={`/admin/${item.id}`}
+              href={`/${item.id}`}
               className={`nav-item ${activePage === item.id ? 'nav-item-active' : ''}`}
             >
               <span className="nav-icon">{item.icon}</span>

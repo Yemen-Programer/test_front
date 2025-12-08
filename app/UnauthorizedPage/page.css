@@ -1,0 +1,277 @@
+.unauthorized-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.unauthorized-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* أيقونة الحماية */
+.icon-container {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.shield-icon {
+  color: #6c757d;
+  opacity: 0.7;
+}
+
+.forbidden-symbol {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  color: #dc3545;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+/* العنوان */
+.title {
+  color: #dc3545;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* قسم الرسائل */
+.message-section {
+  margin-bottom: 30px;
+}
+
+.main-message {
+  font-size: 1.2rem;
+  color: #495057;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.sub-message {
+  font-size: 1rem;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+.highlight {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* مربع المعلومات */
+.info-box {
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff;
+  padding: 20px;
+  margin: 30px 0;
+  text-align: right;
+  border-radius: 8px;
+}
+
+.info-box h3 {
+  color: #007bff;
+  margin-bottom: 15px;
+  text-align: right;
+}
+
+.suggestions-list {
+  list-style-type: none;
+  padding: 0;
+  text-align: right;
+}
+
+.suggestions-list li {
+  padding: 8px 0;
+  color: #495057;
+  position: relative;
+  padding-right: 25px;
+}
+
+.suggestions-list li:before {
+  content: "•";
+  color: #28a745;
+  font-size: 1.5rem;
+  position: absolute;
+  right: 0;
+}
+
+/* أزرار التحكم */
+.actions-container {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  min-width: 160px;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4290 100%);
+}
+
+.secondary-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.secondary-btn:hover {
+  background: #5a6268;
+}
+
+/* قسم الاتصال */
+.contact-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.contact-section p {
+  color: #6c757d;
+  margin-bottom: 10px;
+}
+
+.contact-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.contact-link {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.divider {
+  color: #adb5bd;
+}
+
+.phone {
+  color: #495057;
+}
+
+/* رمز الخطأ */
+.error-code {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.error-code code {
+  background-color: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* التجاوب مع الأجهزة المحمولة */
+@media (max-width: 768px) {
+  .unauthorized-card {
+    padding: 30px 20px;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .actions-container {
+    flex-direction: column;
+  }
+  
+  .action-btn {
+    width: 100%;
+  }
+  
+  .contact-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .divider {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .main-message {
+    font-size: 1.1rem;
+  }
+}

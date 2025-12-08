@@ -9,8 +9,8 @@
 }
 
 .card {
-  width: 280px;  /* زيادة العرض */
-  height: 180px;  /* تقليل الطول */
+  width: 280px; 
+  height: 180px;  
   background: #D7B9E4;
   position: relative;
   display: flex;
@@ -45,9 +45,9 @@
 .card::before {
   content: '';
   position: absolute;
-  width: 160px;  /* زيادة العرض لتتناسب مع الكرت الأوسع */
+  width: 160px;  
   background-image: linear-gradient(180deg, #2A0F38, #774230);
-  height: 180%;  /* زيادة الطول ليتناسب مع الكرت الأقصر */
+  height: 180%;  
   animation: rotBGimg 3s linear infinite;
   transition: all 0.2s linear;
 }
@@ -69,7 +69,7 @@
   border-radius: 15px;
 }
 
-/* تنسيق المواقع بشكل النجمة */
+
 .star-layout {
   display: grid;
   grid-template-areas: 
@@ -88,7 +88,7 @@
   position: relative;
 }
 
-/* تحديد مواقع الكروت في النجمة */
+
 .card.top-left {
   grid-area: top-left;
   justify-self: end;
@@ -122,7 +122,7 @@
   align-self: start;
 }
 
-/* تأثيرات خاصة لكل كرت - بنفس الألوان الجديدة */
+
 .card:nth-child(1)::before {
   background-image: linear-gradient(180deg, #2A0F38, #774230);
 }
@@ -133,8 +133,8 @@
 
 .card:nth-child(3)::before {
   background-image: linear-gradient(180deg, #2A0F38, #774230);
-  width: 180px;  /* زيادة العرض للكرت المركزي */
-  height: 200%;  /* زيادة الطول للكرت المركزي */
+  width: 180px;  
+  height: 200%; 
 }
 
 .card:nth-child(4)::before {
@@ -145,7 +145,7 @@
   background-image: linear-gradient(180deg, #2A0F38, #774230);
 }
 
-/* تنسيق للشاشات المتوسطة */
+
 @media (max-width: 1024px) {
   .star-layout {
     gap: 40px;
@@ -174,7 +174,6 @@
   }
 }
 
-/* تنسيق للشاشات الصغيرة */
 @media (max-width: 768px) {
   .star-layout {
     gap: 30px;
@@ -190,13 +189,13 @@
   }
   
   .card {
-    width: 260px;  /* تعديل العرض للشاشات الصغيرة */
-    height: 170px;  /* تعديل الطول للشاشات الصغيرة */
+    width: 260px;  
+    height: 170px;  
   }
   
   .card::before {
-    width: 150px;  /* تعديل العرض للشاشات الصغيرة */
-    height: 170%;  /* تعديل الطول للشاشات الصغيرة */
+    width: 150px; 
+    height: 170%; 
   }
   
   .card.center {
@@ -208,23 +207,22 @@
   }
   
   .card:nth-child(3)::before {
-    width: 170px;  /* تعديل العرض للكرت المركزي في الشاشات الصغيرة */
-    height: 190%;  /* تعديل الطول للكرت المركزي في الشاشات الصغيرة */
+    width: 170px;
+    height: 190%; 
   }
 }
 
-/* تنسيق للشاشات الصغيرة جداً */
+
 @media (max-width: 480px) {
   .card {
-    width: 240px;  /* تصغير أكثر للشاشات الصغيرة جداً */
+    width: 240px; 
     height: 160px;
   }
   
   .card::before {
-    width: 140px;  /* تصغير أكثر للشاشات الصغيرة جداً */
-    height: 160%;  /* تصغير أكثر للشاشات الصغيرة جداً */
+    width: 140px; 
+    height: 160%; 
   }
-  
   .card h2 {
     font-size: 1.3em;
   }
@@ -234,7 +232,7 @@
   }
   
   .card:nth-child(3)::before {
-    width: 160px;  /* تصغير الكرت المركزي للشاشات الصغيرة جداً */
-    height: 180%;  /* تصغير الكرت المركزي للشاشات الصغيرة جداً */
+    width: 160px;  
+    height: 180%;  
   }
 }

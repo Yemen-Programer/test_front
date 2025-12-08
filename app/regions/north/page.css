@@ -741,3 +741,612 @@ model-viewer {
   width: 350px;
   height: 350px;
 }
+/* خرائط Google */
+.map-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.map-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.map-btn.view-map {
+  background: #4285f4;
+  color: white;
+}
+
+.map-btn.navigate {
+  background: #34a853;
+  color: white;
+}
+
+.map-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* النماذج ثلاثية الأبعاد */
+.clothing-3d {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.left-side {
+  flex: 0 0 350px;
+}
+
+.right-side {
+  flex: 1;
+}
+
+.clothing-image {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* نماذج الإدارة */
+.old-model-preview {
+  margin: 10px 0;
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+.model-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-help {
+  color: #666;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* بطاقات المعالم التراثية */
+.heritage-card {
+  position: relative;
+}
+
+.heritage-card .item-info {
+  padding-bottom: 70px; /* مساحة لأزرار الخرائط */
+}
+
+.heritage-card .map-actions {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+}
+
+/* تصميم الأزياء الجديد */
+.clothing-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.clothing-item-reverse {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.clothing-item-reverse:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* النص على اليمين */
+.clothing-text {
+  text-align: right;
+  direction: rtl;
+}
+
+.clothing-text h3 {
+  font-size: 1.8rem;
+  color: #2A0F38;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.clothing-text p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 0;
+}
+
+/* المودل على اليسار */
+.clothing-model {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.model-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 400px;
+  background: #f8f9fa;
+  border-radius: 15px;
+  color: #6c757d;
+  gap: 1rem;
+  border: 2px dashed #dee2e6;
+}
+
+.model-placeholder p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* تحميل النموذج */
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 2rem;
+  gap: 1rem;
+}
+
+.loading-spinner-small {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #774230;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* تصميم متجاوب */
+@media (max-width: 768px) {
+  .clothing-item-reverse {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+  
+  .clothing-text {
+    text-align: center;
+  }
+  
+  .clothing-text h3 {
+    font-size: 1.5rem;
+  }
+  
+  .clothing-model {
+    min-height: 300px;
+  }
+  
+  model-viewer {
+    height: 300px !important;
+  }
+  
+  .model-placeholder {
+    height: 300px;
+  }
+}
+
+.vote-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.vote-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.vote-button:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+  transform: translateY(-1px);
+}
+
+
+
+.vote-button span {
+  color: #666;
+}
+
+.vote-success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background-color: #f8f9fa;
+  color: #28a745;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* تأكد من أن بطاقات الملابس تعرض زر التصويت بشكل صحيح */
+.clothing-3d .vote-section {
+  margin-top: 20px;
+}
+
+.clothing-3d .vote-success-message {
+  margin-top: 20px;
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.retry-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.retry-button:hover {
+  background-color: #2980b9;
+}
+
+/* تحديثات لقائمة الأمنيات */
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.wishlist-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: #666;
+  width: 100%;
+  justify-content: center;
+}
+
+.wishlist-button:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #ccc;
+  transform: translateY(-1px);
+}
+
+.wishlist-button.in-wishlist {
+  background: #fff3cd;
+  border-color: #ffeaa7;
+  color: #856404;
+}
+
+.wishlist-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.heritage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.wishlist-info {
+  background: rgba(255, 243, 205, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #ffeaa7;
+}
+
+.wishlist-count {
+  color: #856404;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* تحسينات للبطاقات */
+.item-card {
+  transition: all 0.3s ease;
+}
+
+.item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.vote-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  width: 100%;
+  justify-content: center;
+}
+
+.vote-button:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+  transform: translateY(-1px);
+}
+
+.vote-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vote-button span {
+  color: #666;
+}
+
+.vote-success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background-color: #f8f9fa;
+  color: #28a745;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  justify-content: center;
+}
+
+/* تصميم متجاوب */
+@media (max-width: 768px) {
+  .heritage-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .card-actions {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .vote-button,
+  .wishlist-button,
+  .vote-success-message {
+    width: auto;
+    min-width: 120px;
+  }
+}
+
+/* تحسينات للأيقونات */
+.category-icon {
+  color: #667eea;
+}
+
+.card-hint {
+  color: #666;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.wishlist-link {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.wishlist-link:hover {
+  transform: translateY(-2px);
+}
+
+.wishlist-info {
+  background: rgba(255, 243, 205, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #ffeaa7;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.wishlist-info:hover {
+  background: rgba(255, 243, 205, 0.5);
+  transform: translateY(-1px);
+}
+
+.wishlist-count {
+  color: #856404;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.wishlist-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: #666;
+  width: 100%;
+  justify-content: center;
+}
+
+.wishlist-button:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #ccc;
+  transform: translateY(-1px);
+}
+
+.wishlist-button.in-wishlist {
+  background: #fff3cd;
+  border-color: #ffeaa7;
+  color: #856404;
+}
+
+.wishlist-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vote-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  width: 100%;
+  justify-content: center;
+}
+
+.vote-button:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+  transform: translateY(-1px);
+}
+
+.vote-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vote-button span {
+  color: #666;
+}
+
+.vote-success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background-color: #f8f9fa;
+  color: #28a745;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  justify-content: center;
+}
+
+.heritage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .heritage-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .card-actions {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .vote-button,
+  .wishlist-button,
+  .vote-success-message {
+    width: auto;
+    min-width: 120px;
+  }
+}

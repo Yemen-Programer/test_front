@@ -12,7 +12,7 @@ const ARWebXR = ({ modelUrl, onClose }) => {
   useEffect(() => {
     if (!cameraAllowed) return;
 
-    // 🔥 كود WebXR يبدأ فقط بعد السماح بالكاميرا
+
 
     let renderer, scene, camera, controller, reticle, model;
 
@@ -88,7 +88,7 @@ const ARWebXR = ({ modelUrl, onClose }) => {
     return () => renderer.dispose();
   }, [cameraAllowed]);
 
-  // 🔥 زر إذن الكاميرا يظهر أولاً
+
   if (!cameraAllowed) {
     return <CameraPermissionButton onGranted={() => setCameraAllowed(true)} />;
   }

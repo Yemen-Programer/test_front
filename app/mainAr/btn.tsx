@@ -9,7 +9,6 @@ const CameraPermissionButton = ({ onGranted }: { onGranted: () => void }) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-      // إذا اشتغلت الكاميرا
       stream.getTracks().forEach(track => track.stop()); 
       onGranted();
     } catch (err) {

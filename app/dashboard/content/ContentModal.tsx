@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const BASE_URL = "http://localhost:5000"; // ← عدل حسب السيرفر
+const BASE_URL = "http://localhost:5000";
 
 const ContentModal = ({ isOpen, onClose, onSave, content }) => {
   const [title, setTitle] = useState("");
@@ -8,8 +8,13 @@ const ContentModal = ({ isOpen, onClose, onSave, content }) => {
   const [type, setType] = useState("");
   const [region, setRegion] = useState("");
   const [image, setImage] = useState(null);
+  const [model3d, setModel3d] = useState(null);
+  const [googleMapsUrl, setGoogleMapsUrl] = useState("");
+  const [coordinates, setCoordinates] = useState("");
   const [oldImage, setOldImage] = useState(null);
+  const [oldModel3d, setOldModel3d] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showMapFields, setShowMapFields] = useState(false);
 
   const contentTypes = [
     { value: "heritage", label: "المعالم التراثية والأثرية" },
@@ -38,16 +43,30 @@ const ContentModal = ({ isOpen, onClose, onSave, content }) => {
       setType(content.type);
       setRegion(content.region);
       setOldImage(content.image || null);
+      setOldModel3d(content.model3d || null);
+      setGoogleMapsUrl(content.googleMapsUrl || "");
+      setCoordinates(content.coordinates || "");
+      setShowMapFields(content.type === 'heritage');
       setImage(null);
+      setModel3d(null);
     } else {
       setTitle("");
       setDescription("");
       setType("");
       setRegion("");
       setOldImage(null);
+      setOldModel3d(null);
+      setGoogleMapsUrl("");
+      setCoordinates("");
+      setShowMapFields(false);
       setImage(null);
+      setModel3d(null);
     }
   }, [content]);
+
+  useEffect(() => {
+    setShowMapFields(type === 'heritage');
+  }, [type]);
 
   if (!isOpen) return null;
 
@@ -63,9 +82,20 @@ const ContentModal = ({ isOpen, onClose, onSave, content }) => {
     formData.append("type", type);
     formData.append("region", region);
 
-    // فقط أرسل الصورة الجديدة إذا تم تغييرها
+  
+    if (type === 'heritage') {
+      formData.append("googlemapsurl", googleMapsUrl);
+      formData.append("coordinates", coordinates);
+    }
+
+    // إضافة الصورة إذا تم تغييرها
     if (image) {
       formData.append("image", image);
+    }
+
+    // إضافة النموذج ثلاثي الأبعاد إذا تم رفعه
+    if (model3d) {
+      formData.append("model3d", model3d);
     }
 
     try {
@@ -78,6 +108,12 @@ const ContentModal = ({ isOpen, onClose, onSave, content }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTypeChange = (e) => {
+    const selectedType = e.target.value;
+    setType(selectedType);
+    setShowMapFields(selectedType === 'heritage');
   };
 
   return (
@@ -107,7 +143,7 @@ const ContentModal = ({ isOpen, onClose, onSave, content }) => {
 
           <div className="form-group">
             <label>النوع *</label>
-            <select className="form-select" value={type} onChange={(e) => setType(e.target.value)}>
+            <select className="form-select" value={type} onChange={handleTypeChange}>
               <option value="">اختر النوع</option>
               {contentTypes.map((t) => (
                 <option key={t.value} value={t.value}>{t.label}</option>
@@ -125,14 +161,53 @@ const ContentModal = ({ isOpen, onClose, onSave, content }) => {
             </select>
           </div>
 
-          {/* IMAGE PREVIEW */}
+          {/* حقول خرائط Google - تظهر فقط للمعالم التراثية */}
+          {showMapFields && (
+            <>
+              <div className="form-group">
+                <label>رابط خرائط Google</label>
+                <input 
+                  className="form-input" 
+                  value={googleMapsUrl} 
+                  onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                  placeholder="https://maps.google.com/?q=..."
+                />
+                <small className="form-help">رابط الموقع على خرائط Google</small>
+              </div>
+
+              <div className="form-group">
+                <label>الإحداثيات (خط الطول والعرض)</label>
+                <input 
+                  className="form-input" 
+                  value={coordinates} 
+                  onChange={(e) => setCoordinates(e.target.value)}
+                  placeholder="24.7136, 46.6753"
+                />
+                <small className="form-help">الإحداثيات الجغرافية (latitude,longitude)</small>
+              </div>
+            </>
+          )}
+
+          {/* معاينة الصورة الحالية */}
           {oldImage && !image && (
             <div className="old-image-preview">
               <label>الصورة الحالية:</label>
               <img
                 src={`${BASE_URL}/uploads/${oldImage}`}
                 className="modal-preview-image"
+                alt="معاينة الصورة"
               />
+            </div>
+          )}
+
+          {/* معاينة النموذج ثلاثي الأبعاد الحالي */}
+          {oldModel3d && !model3d && (
+            <div className="old-model-preview">
+              <label>النموذج ثلاثي الأبعاد الحالي:</label>
+              <div className="model-info">
+                <span>{oldModel3d}</span>
+                {/* <small>ملف: {path.extname(oldModel3d).toUpperCase()}</small> */}
+              </div>
             </div>
           )}
 
@@ -144,6 +219,18 @@ const ContentModal = ({ isOpen, onClose, onSave, content }) => {
               onChange={(e) => setImage(e.target.files[0])}
               className="file-input"
             />
+          </div>
+
+          {/* حقل رفع النماذج ثلاثية الأبعاد */}
+          <div className="form-group">
+            <label>النموذج ثلاثي الأبعاد (OBJ, GLB, GLTF)</label>
+            <input
+              type="file"
+              accept=".obj,.glb,.gltf"
+              onChange={(e) => setModel3d(e.target.files[0])}
+              className="file-input"
+            />
+            <small className="form-help">يدعم ملفات OBJ, GLB, GLTF (الحد الأقصى 100MB)</small>
           </div>
         </div>
 

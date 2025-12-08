@@ -15,8 +15,7 @@ const ContentManagement = () => {
   useEffect(() => {
     loadContents();
   }, []);
-
-  // تحميل كل المحتويات
+// load content
   const loadContents = async () => {
     try {
       setLoading(true);
@@ -31,19 +30,19 @@ const ContentManagement = () => {
     }
   };
 
-  // فتح مودال الإضافة
+  // open add modal
   const handleAdd = () => {
     setEditingContent(null);
     setIsModalOpen(true);
   };
 
-  // فتح مودال التعديل
+ // open edit modal
   const handleEdit = (content) => {
     setEditingContent(content);
     setIsModalOpen(true);
   };
 
-  // الحذف
+  // delete
   const handleDelete = async (id) => {
     if (confirm("هل أنت متأكد من حذف هذا العنصر؟")) {
       try {
@@ -57,7 +56,7 @@ const ContentManagement = () => {
     }
   };
 
-  // الحفظ (إضافة/تعديل)
+  //add or edit content
   const handleSave = async (formData) => {
     try {
       if (editingContent) {

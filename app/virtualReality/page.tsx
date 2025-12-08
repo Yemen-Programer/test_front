@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Header from '../components/header';
+import Link from 'node_modules/next/link';
 
 const VirtualRealityPage = () => {
   const [activeCard, setActiveCard] = useState(null);
@@ -11,14 +12,24 @@ const VirtualRealityPage = () => {
       title: "قصر المصمك",
       description: "تجربة غامرة تتيح لك استكشاف قصر المصمك التاريخي في الرياض كما كان في عصور مضت. شاهد التفاصيل المعمارية الفريدة وتعرف على الأحداث التاريخية التي شهدها هذا الصرح العظيم.",
       image: "images/1.jpeg",
-      color: "#D7B9E4"
+      color: "#D7B9E4",
+      URL:"vr2"
     },
     {
       id: 2,
       title: "قلعة زعبل",
       description: "انطلق في رحلة افتراضية إلى قلعة زعبل الأثرية في منطقة الجوف. استكشف القلعة التي تعود للقرن السابع عشر وتعرّف على دورها التاريخي في حماية المنطقة.",
       image: "images/2.png",
-      color: "#D7B9E4"
+      color: "#D7B9E4",
+      URL:"vr"
+    },
+      {
+      id: 3,
+      title: "بيت البيعة ",
+      description: "استكشف بيت البيعة وانطلق نحو العالم الافتراضي فيه تخيل كل حجرة عليه وارجع الى التاريخ العظيم",
+      image: "images/3.png",
+      color: "#D7B9E4",
+      URL:"vr3"
     }
   ];
 
@@ -45,8 +56,10 @@ const VirtualRealityPage = () => {
         </header>
 
         {/* شبكة البطاقات */}
+       
         <div className="cards-grid">
           {vrExperiences.map((experience) => (
+             <Link href={experience.URL}>
             <article 
               key={experience.id}
               className="card"
@@ -70,8 +83,10 @@ const VirtualRealityPage = () => {
 
               </div>
             </article>
+            </Link>
           ))}
         </div>
+     
       </div>
 </div>
       <style jsx>{`

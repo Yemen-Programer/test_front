@@ -25,8 +25,9 @@ const ARExperienceCards = () => {
 
   const handleCardClick = async (region: string) => {
     try {
-      await navigator.mediaDevices.getUserMedia({ video: true });
-      setSelectedRegion(region);
+      // await navigator.mediaDevices.getUserMedia({ video: true });
+      // setSelectedRegion(region);
+      alert('يرجى بدء تجربة الواقع المعزز من الهاتف ')
     } catch {
       alert("يجب السماح باستخدام الكاميرا");
     }

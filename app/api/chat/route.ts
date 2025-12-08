@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(req: Request) {
+export async function POST(req: Request){
   console.log("hiii")
   try {
     const { userMessage, systemPrompt } = await req.json();

@@ -3,7 +3,7 @@ import { useState } from "react";
 import ThreeJS360Viewer from "./vrMain";
 
 const VirtualTourPage = () => {
-  const [currentScene, setCurrentScene] = useState("scene10");
+  const [currentScene, setCurrentScene] = useState("scene3");
   const [autoRotate, setAutoRotate] = useState(false);
   const [infoModal, setInfoModal] = useState({ open: false, text: "" });
 
