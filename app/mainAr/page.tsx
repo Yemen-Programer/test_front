@@ -6,11 +6,11 @@ import styles from "./page.module.css";
 type Region = "Northern" | "Eastern" | "Najdi" | "Hejazi" | "Southern";
 
 const MODELS: Record<Region, { glb: string; usdz: string }> = {
-  Northern: { glb: "/models/1.glb", usdz: "/models/1.usdz" },
-  Eastern: { glb: "/models/1.glb", usdz: "/models/1.usdz" },
-  Najdi: { glb: "/models/1.glb", usdz: "/models/1.usdz" },
-  Hejazi: { glb: "/models/1.glb", usdz: "/models/1.usdz" },
-  Southern: { glb: "/models/1.glb", usdz: "/models/1.usdz" },
+  Northern: { glb: "/images/1.glb", usdz: "/images/1.usdz" },
+  Eastern: { glb: "/images/2.glb", usdz: "/images/2.usdz" },
+  Najdi: { glb: "/images/3.glb", usdz: "/images/3.usdz" },
+  Hejazi: { glb: "/images/4.glb", usdz: "/images/4.usdz" },
+  Southern: { glb: "/images/5.glb", usdz: "/images/5.usdz" },
 };
 
 export default function Page() {
