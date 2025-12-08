@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import  "./page.css";
+import "./page.css";
 
 type Region = "Northern" | "Eastern" | "Najdi" | "Hejazi" | "Southern";
 
@@ -35,49 +35,38 @@ export default function Page() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       {/* الكروت */}
-      <div className={styles.starLayout}>
-        <div
-          className={`${styles.card} ${styles.north}`}
-          onClick={() => openAR("Northern")}
-        >
+      <div className="starLayout">
+        <div className="card north" onClick={() => openAR("Northern")}>
           <h2>الزي الشمالي</h2>
-          <p className={styles.hint}>اضغط للتجربة</p>
+          <p className="hint">اضغط للتجربة</p>
         </div>
-        <div
-          className={`${styles.card} ${styles.east}`}
-          onClick={() => openAR("Eastern")}
-        >
+
+        <div className="card east" onClick={() => openAR("Eastern")}>
           <h2>الزي الشرقي</h2>
-          <p className={styles.hint}>اضغط للتجربة</p>
+          <p className="hint">اضغط للتجربة</p>
         </div>
-        <div
-          className={`${styles.card} ${styles.center}`}
-          onClick={() => openAR("Najdi")}
-        >
-          <h2>المنطقة الوسطى </h2> 
-          <p className={styles.hint}>اضغط للتجربة</p>
+
+        <div className="card center" onClick={() => openAR("Najdi")}>
+          <h2>المنطقة الوسطى</h2>
+          <p className="hint">اضغط للتجربة</p>
         </div>
-        <div
-          className={`${styles.card} ${styles.west}`}
-          onClick={() => openAR("Hejazi")}
-        >
+
+        <div className="card west" onClick={() => openAR("Hejazi")}>
           <h2>الزي الحجازي</h2>
-          <p className={styles.hint}>اضغط للتجربة</p>
+          <p className="hint">اضغط للتجربة</p>
         </div>
-        <div
-          className={`${styles.card} ${styles.south}`}
-          onClick={() => openAR("Southern")}
-        >
+
+        <div className="card south" onClick={() => openAR("Southern")}>
           <h2>الزي الجنوبي</h2>
-          <p className={styles.hint}>اضغط للتجربة</p>
+          <p className="hint">اضغط للتجربة</p>
         </div>
       </div>
 
       {/* شاشة AR */}
       {arRegion && (
-        <div className={styles.arScreen}>
+        <div className="arScreen">
           <model-viewer
             src={MODELS[arRegion].glb}
             ios-src={MODELS[arRegion].usdz}
@@ -85,19 +74,20 @@ export default function Page() {
             ar
             auto-rotate
             ar-modes="webxr scene-viewer quick-look"
-            style={{ width: "100%", height: "100%" }}
+            className="arModel"
           >
-            <button slot="ar-button" className={styles.arButton}>
+            <button slot="ar-button" className="arButton">
               تشغيل الواقع المعزز
             </button>
           </model-viewer>
-          <button className={styles.backButton} onClick={closeAR}>
+
+          <button className="backButton" onClick={closeAR}>
             العودة
           </button>
         </div>
       )}
 
-      {loading && <div className={styles.loading}>جاري التحميل...</div>}
+      {loading && <div className="loading">جاري التحميل...</div>}
     </div>
   );
 }
