@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import styles from "./page.module.css";
+import  "./page.css";
 
 type Region = "Northern" | "Eastern" | "Najdi" | "Hejazi" | "Southern";
 
