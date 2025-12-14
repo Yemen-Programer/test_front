@@ -193,6 +193,37 @@ const ThreeJS360Viewer = ({
       isDraggingRef.current = false;
       mountRef.current.style.cursor = "grab";
     };
+    // ===== TOUCH EVENTS (تحريك باليد) =====
+
+
+// ===== TOUCH EVENTS (تحريك باليد) =====
+const onTouchStart = (e) => {
+  isDraggingRef.current = true;
+  const touch = e.touches[0];
+  prevMousePos.current = { x: touch.clientX, y: touch.clientY };
+};
+
+const onTouchMove = (e) => {
+  if (!isDraggingRef.current) return;
+  const touch = e.touches[0];
+  const deltaX = touch.clientX - prevMousePos.current.x;
+  const deltaY = touch.clientY - prevMousePos.current.y;
+
+  rotation.current.y += deltaX * 0.005;
+  rotation.current.x += deltaY * 0.005;
+  rotation.current.x = Math.max(
+    -Math.PI / 2.5,
+    Math.min(Math.PI / 2.5, rotation.current.x)
+  );
+
+  prevMousePos.current = { x: touch.clientX, y: touch.clientY };
+};
+
+const onTouchEnd = () => {
+  isDraggingRef.current = false;
+};
+
+
     const onWheel = (e) => {
       e.preventDefault();
       const cam = cameraRef.current;
@@ -204,7 +235,9 @@ const ThreeJS360Viewer = ({
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
     mountRef.current.addEventListener("wheel", onWheel, { passive: false });
-
+      mountRef.current.addEventListener("touchstart", onTouchStart, { passive: true });
+      mountRef.current.addEventListener("touchmove", onTouchMove, { passive: true });
+      mountRef.current.addEventListener("touchend", onTouchEnd);
     render();
 
     return () => {
@@ -213,6 +246,10 @@ const ThreeJS360Viewer = ({
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
       mountRef.current.removeEventListener("wheel", onWheel);
+      mountRef.current.addEventListener("touchstart", onTouchStart, { passive: true });
+      mountRef.current.addEventListener("touchmove", onTouchMove, { passive: true });
+      mountRef.current.addEventListener("touchend", onTouchEnd);
+
       createdIconsRef.current.forEach((el) => el.remove());
       createdIconsRef.current = [];
       sceneRef.current.traverse((obj) => {
@@ -226,7 +263,7 @@ const ThreeJS360Viewer = ({
     };
   }, [panoramaImage, JSON.stringify(hotspots || []), autoRotate]);
 
-  return (
+  return ( 
     <div className={`relative ${className}`} style={{ height }}>
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900/60 z-20 text-white text-center">

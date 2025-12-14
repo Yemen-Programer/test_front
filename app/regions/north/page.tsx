@@ -105,9 +105,12 @@ const NorthernRegionPage: React.FC = () => {
         const response = await ContentService.getRegionStructure('northern');
         console.log('📥 استجابة بيانات المنطقة:', response);
            const userId= localStorage.getItem('userId');
-        const countResponse = await WishlistService.getWishlistCount(userId);
-        console.log(countResponse.data.count )
-        setWishlistCount(countResponse.data.count)
+        if(userId){
+           const countResponse = await WishlistService.getWishlistCount(userId);
+              console.log(countResponse.data.count)
+              setWishlistCount(countResponse.data.count)
+        }
+     
         if (response.success) {
           const processedData = processImageUrls(response.data);
           setRegionData(processedData);
@@ -623,7 +626,7 @@ const renderClothingCard = (item: ContentItem) => (
           <div className="heritage-content">
             <div className="heritage-header">
               <h2>الأماكن التراثية والأثرية</h2>
-              {currentUserId && (
+              { (
                 <div className="wishlist-info">
                   <Link href="/Wishlist" className="wishlist-link">
                     <span className="wishlist-count">

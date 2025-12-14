@@ -686,7 +686,7 @@ const SouthernRegionPage: React.FC = () => {
           <div className="heritage-content">
             <div className="heritage-header">
               <h2>الأماكن التراثية والأثرية</h2>
-              {currentUserId && (
+              { (
                 <div className="wishlist-info">
                   <Link href="/Wishlist" className="wishlist-link">
                     <span className="wishlist-count">

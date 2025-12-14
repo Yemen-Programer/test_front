@@ -1,6 +1,6 @@
 // services/UserService.js
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api` || 'http://localhost:5000/api';
+const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api` || 'http://www.saudiheritage.site/api';
 class UserService {
   static async getAll(page = 1, limit = 10, filters = {}) {
     const params = new URLSearchParams({

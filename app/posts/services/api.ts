@@ -66,7 +66,7 @@ class ApiService {
   async createPost(content: string, imageFile?: File) {
     const userId = this.getUserId();
     if (!userId) {
-      throw new Error('يجب تسجيل الدخول أولاً');
+      alert('يجب تسجيل الدخول أولاً');
     }
 
     if (imageFile) {
@@ -88,6 +88,10 @@ class ApiService {
   }
 
   async likePost(postId: string) {
+    const userId = this.getUserId();
+    if (!userId) {
+      alert('يجب تسجيل الدخول أولاً');
+    }
     return this.request(`/posts/${postId}/like`, {
       method: 'POST',
       body: JSON.stringify({}),
@@ -95,6 +99,10 @@ class ApiService {
   }
 
   async commentOnPost(postId: string, content: string) {
+       const userId = this.getUserId();
+        if (!userId) {
+      alert('يجب تسجيل الدخول أولاً');
+    }
     return this.request(`/posts/${postId}/comment`, {
       method: 'POST',
       body: JSON.stringify({ content }),
@@ -102,6 +110,10 @@ class ApiService {
   }
 
   async sharePost(postId: string, sharedContent?: string) {
+       const userId = this.getUserId();
+        if (!userId) {
+      alert('يجب تسجيل الدخول أولاً');
+    }
     return this.request(`/posts/${postId}/share`, {
       method: 'POST',
       body: JSON.stringify({ sharedContent }),

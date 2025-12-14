@@ -28,7 +28,6 @@ const WishlistPage: React.FC = () => {
   const router = useRouter();
 
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
   // جلب userId من localStorage
   useEffect(() => {
     const getUserFromStorage = () => {
@@ -71,14 +70,13 @@ const WishlistPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (currentUserId) {
+   
       loadWishlist();
-    }
+    
   }, [currentUserId]);
 
   // دالة إزالة من قائمة الأمنيات
   const handleRemoveFromWishlist = async (contentId: string) => {
-    if (!currentUserId) return;
   const userId = localStorage.getItem('userId');
     try {
       const response = await WishlistService.removeFromWishlist(userId, contentId);

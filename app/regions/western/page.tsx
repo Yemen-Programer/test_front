@@ -348,10 +348,7 @@ const WesternRegionPage: React.FC = () => {
 
   // دالة إضافة/إزالة من قائمة الأمنيات
   const handleWishlist = async (contentId: string) => {
-    if (!currentUserId) {
-      alert('يجب تسجيل الدخول لإدارة قائمة الأمنيات');
-      return;
-    }
+
 
     const userId = localStorage.getItem('userId') || currentUserId;
     console.log('🎯 إدارة الأمنيات:', { userId, contentId, isCurrentlyWishlisted: wishlistedContents.has(contentId) });
@@ -673,7 +670,7 @@ const WesternRegionPage: React.FC = () => {
           <div className="heritage-content">
             <div className="heritage-header">
               <h2>الأماكن التراثية والأثرية</h2>
-              {currentUserId && (
+              { (
                 <div className="wishlist-info">
                   <Link href="/Wishlist" className="wishlist-link">
                     <span className="wishlist-count">
