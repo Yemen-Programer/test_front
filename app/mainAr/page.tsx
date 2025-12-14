@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useState } from "react";
 import "./page.css";
 
@@ -18,6 +19,7 @@ if (typeof window !== "undefined") {
   script.src = "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
   document.head.appendChild(script);
 }
+
 
 export default function Page() {
   const [arRegion, setArRegion] = useState<Region | null>(null);
