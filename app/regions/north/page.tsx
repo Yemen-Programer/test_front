@@ -202,21 +202,9 @@ const NorthernRegionPage: React.FC = () => {
       ].filter(id => id);
 
       console.log('🔄 تحميل حالة الأمنيات للمحتوى:', allContentIds);
+}
 
-      if (allContentIds.length > 0) {
-        const statusResponse = await WishlistService.getWishlistStatus(currentUserId, allContentIds);
-        if (statusResponse.success) {
-          setWishlistedContents(new Set(statusResponse.data.wishlistedContentIds));
-          console.log('✅ تم تحميل حالة الأمنيات:', statusResponse.data.wishlistedContentIds);
-        }
-      }
-
-      // تحميل عدد العناصر في قائمة الأمنيات من الباك إند
-      const countResponse = await WishlistService.getWishlistCount(currentUserId);
-      if (countResponse.success) {
-        setWishlistCount(countResponse.data.count);
-        console.log('✅ عدد العناصر في الأمنيات:', countResponse.data.count);
-      }
+ 
 
     } catch (error) {
       console.error('❌ خطأ في تحميل حالة الأمنيات:', error);
