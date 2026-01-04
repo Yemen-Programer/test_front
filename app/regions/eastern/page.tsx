@@ -127,12 +127,7 @@ const EasternRegionPage: React.FC = () => {
         const response = await ContentService.getRegionStructure('eastern');
         console.log('📥 استجابة بيانات المنطقة:', response);
         
-        const userId = localStorage.getItem('userId');
-        if (userId) {
-          const countResponse = await WishlistService.getWishlistCount(userId);
-          console.log('عدد الأمنيات:', countResponse.data.count);
-          setWishlistCount(countResponse.data.count);
-        }
+
 
         if (response.success) {
           const processedData = processContentUrls(response.data);
