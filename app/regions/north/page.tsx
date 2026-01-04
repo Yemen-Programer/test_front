@@ -181,42 +181,14 @@ const NorthernRegionPage: React.FC = () => {
     }
   };
 
-  // تحميل حالة قائمة الأمنيات
-  const loadWishlistStatus = async (data: RegionData) => {
-    if (!currentUserId) {
-      console.log('⚠️ لا يوجد مستخدم، تخطي تحميل حالة الأمنيات');
-      return;
-    }
 
-    try {
-      const allContentIds = [
-        ...data.heritageSites.map(item => item.id),
-        ...data.intangibleHeritage.oral.map(item => item.id),
-        ...data.intangibleHeritage.folklore.map(item => item.id),
-        ...data.intangibleHeritage.crafts.map(item => item.id),
-        ...data.clothing.men.map(item => item.id),
-        ...data.clothing.women.map(item => item.id),
-        ...data.clothing.boys.map(item => item.id),
-        ...data.clothing.girls.map(item => item.id),
-        ...data.food.map(item => item.id)
-      ].filter(id => id);
-
-      console.log('🔄 تحميل حالة الأمنيات للمحتوى:', allContentIds);
-}
-
- 
-
-    } catch (error) {
-      console.error('❌ خطأ في تحميل حالة الأمنيات:', error);
-    }
-  };
 
   // تحميل حالة التصويت والأمنيات عند تحميل البيانات
   useEffect(() => {
     if (regionData && currentUserId) {
       console.log('🔄 بدء تحميل حالات التصويت والأمنيات...');
       loadVotesStatus(regionData);
-      loadWishlistStatus(regionData);
+   
     }
   }, [regionData, currentUserId]);
 
