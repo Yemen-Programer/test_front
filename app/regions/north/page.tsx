@@ -105,11 +105,6 @@ const NorthernRegionPage: React.FC = () => {
         const response = await ContentService.getRegionStructure('northern');
         console.log('📥 استجابة بيانات المنطقة:', response);
            const userId= localStorage.getItem('userId');
-        if(userId){
-           const countResponse = await WishlistService.getWishlistCount(userId);
-              console.log(countResponse.data.count)
-              setWishlistCount(countResponse.data.count)
-        }
      
         if (response.success) {
           const processedData = processImageUrls(response.data);
