@@ -3,7 +3,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 class WishlistService {
   async addToWishlist(userId, contentId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/wishlist/add`, {
+      const response = await fetch(`${API_BASE_URL}/api//wishlist/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ class WishlistService {
 
   async removeFromWishlist(userId, contentId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/wishlist/remove`, {
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/remove`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ class WishlistService {
 
   async getUserWishlist(userId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/wishlist/user/${userId}`);
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/user/${userId}`);
       const data = await response.json();
       
       if (!response.ok) {
@@ -71,7 +71,7 @@ class WishlistService {
 
   async checkInWishlist(userId, contentId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/wishlist/check/${userId}/${contentId}`);
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/check/${userId}/${contentId}`);
       const data = await response.json();
       
       if (!response.ok) {
@@ -87,7 +87,7 @@ class WishlistService {
 
   async getWishlistStatus(userId, contentIds) {
     try {
-      const response = await fetch(`${API_BASE_URL}/wishlist/status/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/status/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ class WishlistService {
 
   async getWishlistCount(userId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/wishlist/count/${userId}`);
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/count/${userId}`);
       const data = await response.json();
       
       if (!response.ok) {
